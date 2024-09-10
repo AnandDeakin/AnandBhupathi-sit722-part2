@@ -1,14 +1,20 @@
-# Dockerfile for book_catalog microservice
-FROM node:18.17.1
+# Use an official Python runtime as the base image
+FROM python:3.9-slim
 
-WORKDIR /usr/src/app
+# Set the working directory in the container
+WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+# Copy the requirements.txt to install dependencies
+COPY book_catalog/requirements.txt .
 
-COPY ./src ./src
-COPY ./videos ./videos
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-ENV PORT=3000
+# Copy the rest of the application code
+COPY /book_catalog/  .
 
-CMD npm start
+# Expose port (replace with the correct port)
+#EXPOSE 8000
+
+# Command to run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

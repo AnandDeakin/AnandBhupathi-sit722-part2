@@ -1,5 +1,3 @@
-# Write Kubernetes Deployment Script
-
 #
 # To deploy:
 #
@@ -9,34 +7,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: video-streaming
+  name: book-catalog
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: video-streaming
+      app: book-catalog
   template:
     metadata:
       labels:
-        app: video-streaming
+        app: book-catalog
     spec:
       containers: 
-      - name: video-streaming
-        image: bmdk1.azurecr.io/video-streaming:1
-        imagePullPolicy: IfNotPresent
+      - name: book-catalog
+        image: week08:1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
         env:
-        - name: PORT
-          value: "4000"
+        - name: DATABASE_URL
+          value: "postgresql://week08_ksra_user:XTzN4ZEAwRiFgskK9o02P6nEsM0YTwn7@dpg-crg01vrv2p9s73a4hno0-a.oregon-postgres.render.com/week08_ksra"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: video-streaming
+  name: book-catalog
 spec:
   selector:
-    app: video-streaming
-  type: LoadBalancer
+    app: book-catalog
+  type: NodePort
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 4000
+      port: 8000
+      targetPort: 8000
+      nodePort: 30000
